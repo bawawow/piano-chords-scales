@@ -1,24 +1,31 @@
 // 🎵 List of notes for the piano keys
 const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const OCTAVES = 3; // change this number to make the keyboard bigger
+
 
 // 🎹 Create a piano keyboard
 function createKeyboard() {
-  const keyboard = document.getElementById("keyboard");
+const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
 
-  NOTE_NAMES.forEach((note, index) => {
-    let key = document.createElement("div");
-    key.classList.add("key");
-    key.dataset.note = note;
+  for (let octave = 0; octave < OCTAVES; octave++) {
+    NOTE_NAMES.forEach((note, index) => {
+      let key = document.createElement("div");
+      key.classList.add("key");
+      key.dataset.note = note + (octave + 1); // e.g., C1, D#2
 
-    // Handle black keys
-    if (note.includes("#")) {
-      key.classList.add("black");
-      key.style.left = (index * 40 - 14) + "px"; // position over white keys
-    }
+      // White key
+      key.style.left = (octave * 12 * 40 + index * 40) + "px";
 
-    keyboard.appendChild(key);
-  });
+      // Black key
+      if (note.includes("#")) {
+        key.classList.add("black");
+        key.style.left = (octave * 12 * 40 + index * 40 - 14) + "px";
+      }
+
+      keyboard.appendChild(key);
+    });
+  }
 }
 
 // 🔆 Highlight notes on the keyboard
