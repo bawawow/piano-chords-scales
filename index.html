@@ -2,88 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fingerin Mo</title>
+<title>PIANO CHORD</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+
 <style>
+  /* Body & Background */
   body {
     font-family: "Segoe UI", Tahoma, sans-serif;
-      background-image: url(https://cdn.theatlantic.com/thumbor/NoNOryFUWf8xUxx1LY8Pb-bpPz8=/0x0:4930x2773/720x405/media/img/mt/2022/01/2021_10_06T050741Z_1447350005_RC254Q9ITG99_RTRMADP_3_PHILIPPINES_ELECTION_MARCOS/original.jpg);
-    background-size: 200px 200px; 
-    background-repeat: repeat;
-    background-position: top left;
+    background-image: url(https://images.unsplash.com/photo-1648461513491-c8dc79739211?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBzaGVldHxlbnwwfHwwfHx8MA%3D%3D);background-size: cover;        /* cover the entire viewport */
+    background-size: cover;
     margin: 0;
     padding: 20px;
     color: #333;
   }
+
+  /* Container */
   .container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: auto;
-    background: #fff;
-    padding: 25px;
+    background: rgba(255,255,255,0.95);
+    padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
-  h2 {
-    margin-top: 0;
-    font-size: 1.6rem;
-    margin-bottom: 15px;
+
+  /* Main Title */
+  h1 {
+    font-family: 'Cinzel', serif; 
+    font-size: 3rem;
+    text-align: center;
+    margin: 0;
+    color: #222;
   }
+
+  /* Subtitle */
+  h2.subtitle {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-top: 5px;
+    color: #2a7a2a;
+  }
+
+  h2.subtitle a {
+    color: #8b5e3c;
+    text-decoration: none;
+  }
+
+  h2.subtitle a:hover {
+    text-decoration: underline;
+  }
+
+  /* Controls */
   .controls {
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 25px;
     flex-wrap: wrap;
+    justify-content: center;
   }
+
   select, button {
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 10px 15px;
+    font-size: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
     background: #f9f9f9;
     cursor: pointer;
     transition: 0.2s;
   }
+
   select:hover, button:hover { background: #eee; }
 
+    /* Table styling */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 15px;
+    font-family: 'Arial', sans-serif;
   }
-  th, td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #e5e5e5;
+
+  th {
+    background-color: #4CAF50; /* green header */
+    color: white;
+    font-weight: bold;
+    padding: 12px;
     text-align: left;
   }
-  tr:hover { background: #f3faff; cursor: pointer; }
-  th { background: #f0f2f5; font-weight: 600; }
-  p { font-size: 0.9rem; color: #666; }
 
-  /* Keyboard styling */
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+
+tr:nth-child(even) { background-color: #fdf6e3; } /* light cream for even rows */
+tr:nth-child(odd) { background-color: #f6ecd2; }  /* slightly darker parchment for odd rows */
+tr:hover { background-color: #e8d7b3; }           /* warm beige highlight on hover */
+th { background-color: #d4b483; color: #000; }    /* header: warm brown */
+
+
+  /* Keyboard */
   #keyboardWrapper {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 25px;
   }
+
   #keyboard {
-    display: flex; /* use flex instead of float */
+    display: flex;
     position: relative;
-    width: 280px; /* 7 white keys * 40px */
-    height: 160px;
+    width: 560px; /* bigger keyboard */
+    height: 220px;
   }
+
   .white {
-    width: 40px;
-    height: 160px;
+    width: 80px;
+    height: 220px;
     background: white;
     border: 1px solid #aaa;
     position: relative;
     z-index: 1;
     cursor: pointer;
-    flex-shrink: 0; /* prevent shrinking */
+    flex-shrink: 0;
     transition: 0.2s;
   }
+
   .black {
-    width: 28px;
-    height: 100px;
+    width: 50px;
+    height: 140px;
     background: black;
     border: 1px solid #333;
     position: absolute;
@@ -91,25 +139,26 @@
     cursor: pointer;
     transition: 0.2s;
   }
+
   .highlight-white { background: #ffeb3b !important; border-color: #c9a900; }
   .highlight-black { background: #ffa000 !important; }
 
   @media(max-width:600px){
-    #keyboard { width: 280px; height: 120px; }
-    .white { width: 40px; height: 120px; }
-    .black { width: 28px; height: 80px; }
+    #keyboard { width: 280px; height: 160px; }
+    .white { width: 40px; height: 160px; }
+    .black { width: 28px; height: 100px; }
   }
 </style>
 </head>
+
 <body>
 <div class="container">
-<style>
-  .center-bold {
-    text-align: center;
-    font-weight: bold;
-  }
-</style>
-  <h2 class="center-bold">Fingerin Mo</h2>
+  <h1>PIANO CHORD</h1>
+  <h2 class="subtitle"><a href="#">"Master the Art of Proper Fingering"</a></h2>
+
+  <p id="instruction" style="text-align:center; font-weight:bold; color:#444;">
+    Choose a root note, then click <strong>Chords</strong> or <strong>Scales</strong> to see the corresponding piano notes and scales highlighted on the keyboard.
+  </p>
 
   <div class="controls">
     <select id="root">
@@ -121,14 +170,12 @@
     <button onclick="showScales()">Scales</button>
   </div>
 
-  <table id="chart">
+  <table id="chart" style="display:none;">
     <thead>
       <tr><th>Chord / Scale</th><th>Notes</th></tr>
     </thead>
     <tbody></tbody>
   </table>
-
-  <p>Click a row to highlight it on the keyboard.</p>
 </div>
 
 <div id="keyboardWrapper">
@@ -141,19 +188,18 @@
   const blackMap = {"C": "C#", "D":"D#", "F":"F#", "G":"G#", "A":"A#"};
   const keyboard = document.getElementById("keyboard");
 
-  // Create white keys
+  // Create keys
   whiteOrder.forEach((w,i)=>{
     const white = document.createElement("div");
     white.className = "white";
     white.dataset.note = w;
     keyboard.appendChild(white);
 
-    // Create black keys
     if(blackMap[w]){
       const black = document.createElement("div");
       black.className = "black";
       black.dataset.note = blackMap[w];
-      black.style.left = (i*40 + 28)+"px"; // center above gap
+      black.style.left = (i*80 + 60)+"px"; // adjust to bigger white key
       keyboard.appendChild(black);
     }
   });
@@ -163,6 +209,7 @@
     "Maj7":[0,4,7,11], "m7":[0,3,7,10],
     "Sus2":[0,2,7], "Sus4":[0,5,7], "Dim":[0,3,6]
   };
+
   const scales = {
     "Major Scale":[0,2,4,5,7,9,11],
     "Natural Minor":[0,2,3,5,7,8,10]
@@ -172,6 +219,9 @@
   function showScales(){ render(scales); }
 
   function render(set){
+    document.getElementById("instruction").style.display="none"; // hide instruction
+    document.getElementById("chart").style.display="table"; // show chart
+
     const root = document.getElementById("root").value;
     const tbody = document.querySelector("#chart tbody");
     tbody.innerHTML = "";
@@ -195,8 +245,8 @@
     });
   }
 
-  // Initial render
-   // No chords or scales displayed by default
 </script>
 </body>
 </html>
+
+
