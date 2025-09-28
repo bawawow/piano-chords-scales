@@ -51,14 +51,15 @@ footer {
 }
 .keyboard {
   position: relative;
-  width: 480px; /* 12 white keys × 40px each */
+  width: calc(12 * 40px * 3); /* 12 notes × 40px × 3 octaves */
   height: 160px;
   margin: 20px auto;
+  background: #eee;
 }
 
 .key {
   display: inline-block;
-  position: relative;
+  position: absolute;
   width: 40px;
   height: 160px;
   border: 1px solid #333;
@@ -67,7 +68,6 @@ footer {
 }
 
 .key.black {
-  position: absolute;
   width: 28px;
   height: 100px;
   background: black;
@@ -78,4 +78,3 @@ footer {
 .key.highlight {
   background: yellow !important;
 }
-
