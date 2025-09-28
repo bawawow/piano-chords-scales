@@ -8,25 +8,24 @@ function createKeyboard() {
 const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
 
-  for (let octave = 0; octave < OCTAVES; octave++) {
-    NOTE_NAMES.forEach((note, index) => {
+  const octaves = 3; // number of octaves
+  for (let o = 0; o < octaves; o++) {
+    NOTES.forEach(note => {
       let key = document.createElement("div");
       key.classList.add("key");
-      key.dataset.note = note + (octave + 1); // e.g., C1, D#2
+      key.dataset.note = note + o; // keep octave info for uniqueness
 
-      // White key
-      key.style.left = (octave * 12 * 40 + index * 40) + "px";
-
-      // Black key
       if (note.includes("#")) {
         key.classList.add("black");
-        key.style.left = (octave * 12 * 40 + index * 40 - 14) + "px";
+      } else {
+        key.classList.add("white");
       }
 
       keyboard.appendChild(key);
     });
   }
 }
+
 
 // 🔆 Highlight notes on the keyboard
 function highlightKeys(noteList) {
