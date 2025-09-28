@@ -9,14 +9,14 @@ function createKeyboard() {
   NOTE_NAMES.forEach((note, index) => {
     let key = document.createElement("div");
     key.classList.add("key");
+    key.dataset.note = note;
 
-    // Black keys
+    // Handle black keys
     if (note.includes("#")) {
       key.classList.add("black");
-      key.style.left = (index * 40 - 14) + "px";
+      key.style.left = (index * 40 - 14) + "px"; // position over white keys
     }
 
-    key.dataset.note = note;
     keyboard.appendChild(key);
   });
 }
