@@ -31,6 +31,8 @@ function highlightKeys(noteList) {
 // Draw keyboard on load
 createKeyboard();
 
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
 const CHORD_TYPES = {
   "Major": [0,4,7],
   "Minor": [0,3,7],
