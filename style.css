@@ -50,32 +50,32 @@ footer {
   color: #64748b;
 }
 .keyboard {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
-  user-select: none;
+  position: relative;
+  width: 480px; /* 12 white keys × 40px each */
+  height: 160px;
+  margin: 20px auto;
 }
 
 .key {
+  display: inline-block;
+  position: relative;
   width: 40px;
-  height: 180px;
+  height: 160px;
   border: 1px solid #333;
   background: white;
-  position: relative;
   box-sizing: border-box;
 }
 
 .key.black {
-  width: 28px;
-  height: 110px;
-  background: black;
   position: absolute;
-  margin-left: -14px;
-  margin-right: -14px;
+  width: 28px;
+  height: 100px;
+  background: black;
   z-index: 2;
+  border: 1px solid #222;
 }
 
 .key.highlight {
-  background: #facc15 !important; /* yellow highlight */
+  background: yellow !important;
 }
 
