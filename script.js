@@ -1,5 +1,7 @@
-const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+// List of notes for the piano keys
+const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
+// 🎹 Create a piano keyboard
 function createKeyboard() {
   const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
@@ -8,7 +10,7 @@ function createKeyboard() {
     let key = document.createElement("div");
     key.classList.add("key");
 
-    // Black keys
+    // Make black keys (#)
     if (note.includes("#")) {
       key.classList.add("black");
       key.style.left = (index * 40 - 14) + "px";
@@ -19,6 +21,7 @@ function createKeyboard() {
   });
 }
 
+// 🔆 Highlight notes on the keyboard
 function highlightKeys(noteList) {
   document.querySelectorAll(".key").forEach(key => {
     key.classList.remove("highlight");
@@ -28,7 +31,25 @@ function highlightKeys(noteList) {
   });
 }
 
-// Draw keyboard on load
+// 🎵 Show chord + highlight notes
+function showChord(chord) {
+  document.getElementById("output").innerText = "Chord: " + chord;
+
+  if (chord === "C Major") highlightKeys(["C","E","G"]);
+  if (chord === "G Major") highlightKeys(["G","B","D"]);
+  if (chord === "A Minor") highlightKeys(["A","C","E"]);
+}
+
+// 🎼 Show scale + highlight notes
+function showScale(scale) {
+  document.getElementById("output").innerText = "Scale: " + scale;
+
+  if (scale === "C Major Scale") highlightKeys(["C","D","E","F","G","A","B"]);
+  if (scale === "G Major Scale") highlightKeys(["G","A","B","C","D","E","F#"]);
+  if (scale === "A Minor Scale") highlightKeys(["A","B","C","D","E","F","G"]);
+}
+
+// 🖼️ Draw keyboard on page load
 createKeyboard();
 
 const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
