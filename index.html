@@ -1,153 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Fingerin Mo!</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    /* Page layout */
-    body{font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:#f4f6f9;margin:0;padding:28px;color:#222}
-    .card{max-width:920px;margin:0 auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 6px 18px rgba(12,20,30,0.06)}
-    h1{margin:0 0 12px;font-size:26px}
-    .controls{display:flex;gap:8px;align-items:center;margin-bottom:16px}
-    select,button{padding:8px 11px;border-radius:8px;border:1px solid #d1d5db;background:#fbfbfc;cursor:pointer}
-    table{width:100%;border-collapse:collapse;margin-top:6px}
-    th,td{padding:12px;border-bottom:1px solid #eef2f6;text-align:left}
-    th{background:#f3f6f9;font-weight:700}
-    tr:hover{background:#fbfdff;cursor:pointer}
-    p.info{color:#6b7280;margin:12px 0 0}
+<meta charset="UTF-8">
+<title>Fingerin Mo</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  h2 {
+    margin-top: 0;
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  select, button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  select:hover, button:hover { background: #eee; }
 
-    /* Keyboard container sized to 7 white keys */
-    :root{
-      --white-w:56px;
-      --white-h:160px;
-      --black-w:36px;
-      --black-h:100px;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+  th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e5e5e5;
+    text-align: left;
+  }
+  tr:hover { background: #f3faff; cursor: pointer; }
+  th { background: #f0f2f5; font-weight: 600; }
+  p { font-size: 0.9rem; color: #666; }
 
-    #keyboardWrap{display:flex;justify-content:center;margin-top:26px}
-    #keyboard{position:relative;width:calc(var(--white-w) * 7);height:var(--white-h);background:transparent}
+  /* Keyboard styling */
+  #keyboardWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  #keyboard {
+    display: flex; /* use flex instead of float */
+    position: relative;
+    width: 280px; /* 7 white keys * 40px */
+    height: 160px;
+  }
+  .white {
+    width: 40px;
+    height: 160px;
+    background: white;
+    border: 1px solid #aaa;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    flex-shrink: 0; /* prevent shrinking */
+    transition: 0.2s;
+  }
+  .black {
+    width: 28px;
+    height: 100px;
+    background: black;
+    border: 1px solid #333;
+    position: absolute;
+    z-index: 2;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .highlight-white { background: #ffeb3b !important; border-color: #c9a900; }
+  .highlight-black { background: #ffa000 !important; }
 
-    /* white keys: laid out inline inside keyboard container */
-    .white-key{
-      display:inline-block;
-      width:var(--white-w);
-      height:var(--white-h);
-      background:#fff;
-      border:1px solid #bfc7cf;
-      box-sizing:border-box;
-      position:relative;
-      vertical-align:top;
-      z-index:1;
-    }
-
-    /* black keys absolutely positioned over the container */
-    .black-key{
-      position:absolute;
-      width:var(--black-w);
-      height:var(--black-h);
-      background:#111;
-      border:1px solid #111;
-      z-index:2;
-      box-sizing:border-box;
-      transform:translateX(-50%); /* center on the computed left position */
-    }
-
-    /* highlights: white vs black separate styles to avoid orange-mix */
-    .white-key.highlight{background:#ffec5c;border-color:#c9a900}
-    .black-key.highlight{outline:3px solid #ffd166; box-shadow:0 0 0 1px rgba(255,209,102,0.15) inset}
-
-    /* small responsive behavior */
-    @media(max-width:600px){
-      :root{--white-w:40px;--white-h:120px;--black-w:26px;--black-h:80px}
-      .card{padding:18px}
-    }
-  </style>
+  @media(max-width:600px){
+    #keyboard { width: 280px; height: 120px; }
+    .white { width: 40px; height: 120px; }
+    .black { width: 28px; height: 80px; }
+  }
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Piano Chord Lookup Chart</h1>
+<div class="container">
+<style>
+  .center-bold {
+    text-align: center;
+    font-weight: bold;
+  }
+</style>
+  <h2 class="center-bold">Fingerin Mo</h2>
 
-    <div class="controls">
-      <label for="root">Root:</label>
-      <select id="root">
-        <option>C</option><option>C#</option><option>D</option><option>D#</option>
-        <option>E</option><option>F</option><option>F#</option><option>G</option>
-        <option>G#</option><option>A</option><option>A#</option><option>B</option>
-      </select>
-
-      <button id="btnChords">Chords</button>
-      <button id="btnScales">Scales</button>
-    </div>
-
-    <table id="chart">
-      <thead><tr><th>Chord / Scale</th><th>Notes</th></tr></thead>
-      <tbody></tbody>
-    </table>
-
-    <p class="info">This chart shows chords/scales for the selected root. Click a row to highlight it on the keyboard.</p>
+  <div class="controls">
+    <select id="root">
+      <option>C</option><option>C#</option><option>D</option><option>D#</option>
+      <option>E</option><option>F</option><option>F#</option><option>G</option>
+      <option>G#</option><option>A</option><option>A#</option><option>B</option>
+    </select>
+    <button onclick="showChords()">Chords</button>
+    <button onclick="showScales()">Scales</button>
   </div>
 
-  <div id="keyboardWrap">
-    <div id="keyboard" aria-hidden="true"></div>
-  </div>
+  <table id="chart">
+    <thead>
+      <tr><th>Chord / Scale</th><th>Notes</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-  <script>
-    /* Data */
-    const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-    const WHITE_ORDER = ["C","D","E","F","G","A","B"]; // 7 whites in order
-    const BLACK_FOR = { C: "C#", D:"D#", F:"F#", G:"G#", A:"A#" }; // black keys that follow these whites
+  <p>Click a row to highlight it on the keyboard.</p>
+</div>
 
-    const CHORDS = {
-      "Major": [0,4,7],
-      "Minor": [0,3,7],
-      "7 (Dom)": [0,4,7,10],
-      "Maj7": [0,4,7,11],
-      "m7": [0,3,7,10],
-      "Sus2": [0,2,7],
-      "Sus4": [0,5,7],
-      "Dim": [0,3,6]
-    };
+<div id="keyboardWrapper">
+  <div id="keyboard"></div>
+</div>
 
-    const SCALES = {
-      "Major Scale": [0,2,4,5,7,9,11],
-      "Natural Minor": [0,2,3,5,7,8,10]
-    };
+<script>
+  const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  const whiteOrder = ["C","D","E","F","G","A","B"];
+  const blackMap = {"C": "C#", "D":"D#", "F":"F#", "G":"G#", "A":"A#"};
+  const keyboard = document.getElementById("keyboard");
 
-    /* Build keyboard: 7 whites and black keys absolutely positioned */
-    const keyboard = document.getElementById("keyboard");
-    const whiteW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--white-w')) || 56;
-    const blackW = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--black-w')) || 36;
+  // Create white keys
+  whiteOrder.forEach((w,i)=>{
+    const white = document.createElement("div");
+    white.className = "white";
+    white.dataset.note = w;
+    keyboard.appendChild(white);
 
-    // Create white keys inline
-    WHITE_ORDER.forEach((pitch, i) => {
-      const w = document.createElement('div');
-      w.className = 'white-key';
-      w.dataset.pitch = pitch; // e.g. "C"
-      keyboard.appendChild(w);
+    // Create black keys
+    if(blackMap[w]){
+      const black = document.createElement("div");
+      black.className = "black";
+      black.dataset.note = blackMap[w];
+      black.style.left = (i*40 + 28)+"px"; // center above gap
+      keyboard.appendChild(black);
+    }
+  });
+
+  const chords = {
+    "Major":[0,4,7], "Minor":[0,3,7], "7 (Dom)":[0,4,7,10],
+    "Maj7":[0,4,7,11], "m7":[0,3,7,10],
+    "Sus2":[0,2,7], "Sus4":[0,5,7], "Dim":[0,3,6]
+  };
+  const scales = {
+    "Major Scale":[0,2,4,5,7,9,11],
+    "Natural Minor":[0,2,3,5,7,8,10]
+  };
+
+  function showChords(){ render(chords); }
+  function showScales(){ render(scales); }
+
+  function render(set){
+    const root = document.getElementById("root").value;
+    const tbody = document.querySelector("#chart tbody");
+    tbody.innerHTML = "";
+    Object.entries(set).forEach(([name, intervals])=>{
+      const row = document.createElement("tr");
+      const chordNotes = intervals.map(i=>notes[(notes.indexOf(root)+i)%12]);
+      row.innerHTML=`<td>${root} ${name}</td><td>${chordNotes.join(" – ")}</td>`;
+      row.onclick = ()=>highlight(chordNotes);
+      tbody.appendChild(row);
     });
+  }
 
-    // Create black keys & position by calculating left offsets (centered between neighbouring white keys)
-    // For each white that should have a following black, we position the black key at (index + 1) * whiteW - (whiteW/2)
-    Object.entries(BLACK_FOR).forEach(([whitePitch, blackPitch]) => {
-      const index = WHITE_ORDER.indexOf(whitePitch);
-      if (index >= 0) {
-        const left = (index + 1) * whiteW - (whiteW / 2);
-        const b = document.createElement('div');
-        b.className = 'black-key';
-        b.dataset.pitch = blackPitch; // e.g. "C#"
-        b.style.left = left + 'px';
-        keyboard.appendChild(b);
+  function highlight(chordNotes){
+    document.querySelectorAll(".white, .black").forEach(k=>k.classList.remove("highlight-white","highlight-black"));
+    chordNotes.forEach(n=>{
+      const key = document.querySelector(`[data-note='${n}']`);
+      if(key){
+        if(key.classList.contains("white")) key.classList.add("highlight-white");
+        if(key.classList.contains("black")) key.classList.add("highlight-black");
       }
     });
+  }
 
-    /* Utility: get notes for root + interval list */
-    function notesFor(root, intervals) {
-      const rootIndex = NOTES.indexOf(root);
-      return intervals.map(i => NOTES[(rootIndex + i) % 12]);
-    }
-
-    /* Render table rows for a dictionary (chords or scales) */
-    function renderDict(dict, root) {
-      const tbody = document.querySelector('#chart tbody');
-      tbody.innerHTML = '';
+  // Initial render
+  showChords();
+</script>
+</body>
+</html>
