@@ -1,182 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Piano Chords & Scales</title>
+  <!-- connect CSS -->
   <link rel="stylesheet" href="style.css">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Piano Chords & Scales Lookup Chart</title>
-  <style>
-    
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-    select, button {
-      padding: 6px 10px;
-      margin-right: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-    button.active {
-      background: #0284c7;
-      color: white;
-      border: none;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background: #f1f5f9;
-    }
-    footer {
-      margin-top: 15px;
-      font-size: 0.8rem;
-      color: #64748b;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Piano <span id="modeTitle">Chord</span> Lookup Chart</h1>
+    <h1>Piano Chords & Scales</h1>
 
-    <div>
-      <label for="root">Root: </label>
-      <select id="root"></select>
-      <button id="chordBtn" class="active">Chords</button>
-      <button id="scaleBtn">Scales</button>
-    </div>
+    <h2>Chords</h2>
+    <button onclick="showChord('C Major')">C Major</button>
+    <button onclick="showChord('G Major')">G Major</button>
+    <button onclick="showChord('A Minor')">A Minor</button>
 
-    <table id="chartTable">
-      <thead>
-        <tr>
-          <th id="chartType">Chord</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <h2>Scales</h2>
+    <button onclick="showScale('C Major Scale')">C Major Scale</button>
+    <button onclick="showScale('G Major Scale')">G Major Scale</button>
+    <button onclick="showScale('A Minor Scale')">A Minor Scale</button>
 
-    <footer id="footer"></footer>
+    <div id="output">Select a chord or scale</div>
   </div>
 
-  <script>
-    const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-
-    const CHORD_TYPES = {
-      "Major": [0,4,7],
-      "Minor": [0,3,7],
-      "7 (Dom)": [0,4,7,10],
-      "Maj7": [0,4,7,11],
-      "m7": [0,3,7,10],
-      "Sus2": [0,2,7],
-      "Sus4": [0,5,7],
-      "Dim": [0,3,6],
-    };
-
-    const SCALE_TYPES = {
-      "Major": [0,2,4,5,7,9,11],
-      "Minor": [0,2,3,5,7,8,10],
-      "Harmonic Minor": [0,2,3,5,7,8,11],
-      "Pentatonic": [0,2,4,7,9],
-      "Blues": [0,3,5,6,7,10],
-      "Chromatic": [...Array(12).keys()],
-    };
-
-    const rootSelect = document.getElementById("root");
-    const chordBtn = document.getElementById("chordBtn");
-    const scaleBtn = document.getElementById("scaleBtn");
-    const chartTable = document.getElementById("chartTable").querySelector("tbody");
-    const chartType = document.getElementById("chartType");
-    const modeTitle = document.getElementById("modeTitle");
-    const footer = document.getElementById("footer");
-
-    let mode = "Chord";
-    let root = "C";
-
-    // Fill root selector
-    NOTE_NAMES.forEach(note => {
-      let opt = document.createElement("option");
-      opt.value = note;
-      opt.textContent = note;
-      rootSelect.appendChild(opt);
-    });
-    rootSelect.value = root;
-
-    function noteIndex(rootIndex, semitone) {
-      return (rootIndex + semitone) % 12;
-    }
-
-    function buildFromIntervals(root, intervals) {
-      const rootIndex = NOTE_NAMES.indexOf(root);
-      return intervals.map(i => NOTE_NAMES[noteIndex(rootIndex, i)]);
-    }
-
-    function renderChart() {
-      chartTable.innerHTML = "";
-      if (mode === "Chord") {
-        chartType.textContent = "Chord";
-        modeTitle.textContent = "Chord";
-        Object.entries(CHORD_TYPES).forEach(([name, intervals]) => {
-          const notes = buildFromIntervals(root, intervals);
-          let row = `<tr><td>${root} ${name}</td><td>${notes.join(" – ")}</td></tr>`;
-          chartTable.insertAdjacentHTML("beforeend", row);
-        });
-      } else {
-        chartType.textContent = "Scale";
-        modeTitle.textContent = "Scale";
-        Object.entries(SCALE_TYPES).forEach(([name, intervals]) => {
-          const notes = buildFromIntervals(root, intervals);
-          let row = `<tr><td>${root} ${name}</td><td>${notes.join(" – ")}</td></tr>`;
-          chartTable.insertAdjacentHTML("beforeend", row);
-        });
-      }
-      footer.textContent = `This lookup chart shows all ${mode.toLowerCase()}s for root ${root}. Switch root or mode to explore more.`;
-    }
-
-    rootSelect.addEventListener("change", (e) => {
-      root = e.target.value;
-      renderChart();
-    });
-
-    chordBtn.addEventListener("click", () => {
-      mode = "Chord";
-      chordBtn.classList.add("active");
-      scaleBtn.classList.remove("active");
-      renderChart();
-    });
-
-    scaleBtn.addEventListener("click", () => {
-      mode = "Scale";
-      scaleBtn.classList.add("active");
-      chordBtn.classList.remove("active");
-      renderChart();
-    });
-
-    renderChart();
-  </script>
+  <!-- connect JS -->
   <script src="script.js"></script>
 </body>
 </html>
-
