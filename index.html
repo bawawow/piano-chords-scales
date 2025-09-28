@@ -28,7 +28,6 @@
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    overflow-x: auto; /* scroll if table too wide on mobile */
   }
 
   /* Main Title */
@@ -86,50 +85,49 @@
 
   select:hover, button:hover { background: #eee; }
 
-  /* Table styling */
+  /* Table styling - bigger */
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     font-family: 'Arial', sans-serif;
-    table-layout: fixed; /* Fix alignment */
+    table-layout: fixed;
+    font-size: 1.2rem;
   }
 
   th, td {
-    padding: 12px;
+    padding: 16px 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
   }
 
-  th:first-child, td:first-child { width: 40%; }  /* chord/scale column */
-  th:last-child, td:last-child { width: 60%; }   /* notes column */
+  th:first-child, td:first-child { width: 40%; }
+  th:last-child, td:last-child { width: 60%; }
 
   tr:nth-child(even) { background-color: #fdf6e3; }
   tr:nth-child(odd) { background-color: #f6ecd2; }
   tr:hover { background-color: #e8d7b3; }
   th { background-color: #d4b483; color: #000; font-weight: bold; }
 
-  /* Keyboard */
+  /* Keyboard - bigger */
   #keyboardWrapper {
     display: flex;
     justify-content: center;
     margin-top: 25px;
-    overflow-x: auto; /* horizontal scroll for mobile */
   }
 
   #keyboard {
     display: flex;
     position: relative;
-    width: 100%;
-    max-width: 560px;
-    height: 220px;
+    width: 840px;
+    height: 330px;
   }
 
   .white {
-    width: 80px;
-    height: 220px;
+    width: 120px;
+    height: 330px;
     background: white;
     border: 1px solid #aaa;
     position: relative;
@@ -140,8 +138,8 @@
   }
 
   .black {
-    width: 50px;
-    height: 140px;
+    width: 70px;
+    height: 210px;
     background: black;
     border: 1px solid #333;
     position: absolute;
@@ -153,14 +151,13 @@
   .highlight-white { background: #ffeb3b !important; border-color: #c9a900; }
   .highlight-black { background: #ffa000 !important; }
 
-  /* Responsive adjustments */
+  /* Responsive for mobile */
   @media(max-width:600px){
-    h1 { font-size: 2rem; }
-    h2.subtitle { font-size: 1.4rem; }
-    select, button { font-size: 14px; padding: 8px 12px; }
-    #keyboard { height: 160px; }
-    .white { width: 40px; height: 160px; }
-    .black { width: 28px; height: 100px; }
+    #keyboard { width: 420px; height: 165px; }
+    .white { width: 60px; height: 165px; }
+    .black { width: 35px; height: 105px; }
+    table { font-size: 1rem; }
+    th, td { padding: 10px; }
   }
 </style>
 </head>
@@ -184,14 +181,12 @@
     <button onclick="showScales()">Scales</button>
   </div>
 
-  <div style="overflow-x:auto;">
-    <table id="chart" style="display:none;">
-      <thead>
-        <tr><th>Chord / Scale</th><th>Notes</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <table id="chart" style="display:none;">
+    <thead>
+      <tr><th>Chord / Scale</th><th>Notes</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <div id="keyboardWrapper">
@@ -199,67 +194,67 @@
 </div>
 
 <script>
-  const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-  const whiteOrder = ["C","D","E","F","G","A","B"];
-  const blackMap = {"C": "C#", "D":"D#", "F":"F#", "G":"G#", "A":"A#"};
-  const keyboard = document.getElementById("keyboard");
+const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const whiteOrder = ["C","D","E","F","G","A","B"];
+const blackMap = {"C": "C#", "D":"D#", "F":"F#", "G":"G#", "A":"A#"};
+const keyboard = document.getElementById("keyboard");
 
-  // Create keys
-  whiteOrder.forEach((w,i)=>{
-    const white = document.createElement("div");
-    white.className = "white";
-    white.dataset.note = w;
-    keyboard.appendChild(white);
+// Create keys
+whiteOrder.forEach((w,i)=>{
+  const white = document.createElement("div");
+  white.className = "white";
+  white.dataset.note = w;
+  keyboard.appendChild(white);
 
-    if(blackMap[w]){
-      const black = document.createElement("div");
-      black.className = "black";
-      black.dataset.note = blackMap[w];
-      black.style.left = (i*80 + 60)+"px"; 
-      keyboard.appendChild(black);
+  if(blackMap[w]){
+    const black = document.createElement("div");
+    black.className = "black";
+    black.dataset.note = blackMap[w];
+    black.style.left = (i*120 + 90)+"px"; // adjust for bigger keys
+    keyboard.appendChild(black);
+  }
+});
+
+const chords = {
+  "Major":[0,4,7], "Minor":[0,3,7], "7 (Dom)":[0,4,7,10],
+  "Maj7":[0,4,7,11], "m7":[0,3,7,10],
+  "Sus2":[0,2,7], "Sus4":[0,5,7], "Dim":[0,3,6]
+};
+
+const scales = {
+  "Major Scale":[0,2,4,5,7,9,11],
+  "Natural Minor":[0,2,3,5,7,8,10]
+};
+
+function showChords(){ render(chords); }
+function showScales(){ render(scales); }
+
+function render(set){
+  document.getElementById("instruction").style.display="none";
+  document.getElementById("chart").style.display="table";
+
+  const root = document.getElementById("root").value;
+  const tbody = document.querySelector("#chart tbody");
+  tbody.innerHTML = "";
+  Object.entries(set).forEach(([name, intervals])=>{
+    const row = document.createElement("tr");
+    const chordNotes = intervals.map(i=>notes[(notes.indexOf(root)+i)%12]);
+    row.innerHTML=`<td>${root} ${name}</td><td>${chordNotes.join(" – ")}</td>`;
+    row.onclick = ()=>highlight(chordNotes);
+    tbody.appendChild(row);
+  });
+}
+
+function highlight(chordNotes){
+  document.querySelectorAll(".white, .black").forEach(k=>k.classList.remove("highlight-white","highlight-black"));
+  chordNotes.forEach(n=>{
+    const key = document.querySelector(`[data-note='${n}']`);
+    if(key){
+      if(key.classList.contains("white")) key.classList.add("highlight-white");
+      if(key.classList.contains("black")) key.classList.add("highlight-black");
     }
   });
-
-  const chords = {
-    "Major":[0,4,7], "Minor":[0,3,7], "7 (Dom)":[0,4,7,10],
-    "Maj7":[0,4,7,11], "m7":[0,3,7,10],
-    "Sus2":[0,2,7], "Sus4":[0,5,7], "Dim":[0,3,6]
-  };
-
-  const scales = {
-    "Major Scale":[0,2,4,5,7,9,11],
-    "Natural Minor":[0,2,3,5,7,8,10]
-  };
-
-  function showChords(){ render(chords); }
-  function showScales(){ render(scales); }
-
-  function render(set){
-    document.getElementById("instruction").style.display="none";
-    document.getElementById("chart").style.display="table";
-
-    const root = document.getElementById("root").value;
-    const tbody = document.querySelector("#chart tbody");
-    tbody.innerHTML = "";
-    Object.entries(set).forEach(([name, intervals])=>{
-      const row = document.createElement("tr");
-      const chordNotes = intervals.map(i=>notes[(notes.indexOf(root)+i)%12]);
-      row.innerHTML=`<td>${root} ${name}</td><td>${chordNotes.join(" – ")}</td>`;
-      row.onclick = ()=>highlight(chordNotes);
-      tbody.appendChild(row);
-    });
-  }
-
-  function highlight(chordNotes){
-    document.querySelectorAll(".white, .black").forEach(k=>k.classList.remove("highlight-white","highlight-black"));
-    chordNotes.forEach(n=>{
-      const key = document.querySelector(`[data-note='${n}']`);
-      if(key){
-        if(key.classList.contains("white")) key.classList.add("highlight-white");
-        if(key.classList.contains("black")) key.classList.add("highlight-black");
-      }
-    });
-  }
+}
 </script>
 </body>
 </html>
