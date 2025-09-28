@@ -1,13 +1,29 @@
-// 🎵 List of notes for the piano keys
 const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const OCTAVES = 2;
+
+const CHORDS = {
+  "Major": [0, 4, 7],
+  "Minor": [0, 3, 7],
+  "7 (Dom)": [0, 4, 7, 10],
+  "Maj7": [0, 4, 7, 11],
+  "m7": [0, 3, 7, 10],
+  "Sus2": [0, 2, 7],
+  "Sus4": [0, 5, 7],
+  "Dim": [0, 3, 6]
+};
+
+const SCALES = {
+  "Major Scale": [0, 2, 4, 5, 7, 9, 11],
+  "Minor Scale": [0, 2, 3, 5, 7, 8, 10],
+  "Pentatonic Major": [0, 2, 4, 7, 9],
+  "Pentatonic Minor": [0, 3, 5, 7, 10]
+};
 
 function createKeyboard() {
   const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
 
   let whiteIndex = 0;
-
   for (let o = 0; o < OCTAVES; o++) {
     NOTES.forEach(note => {
       if (note.includes("#")) {
@@ -15,17 +31,13 @@ function createKeyboard() {
         let blackKey = document.createElement("div");
         blackKey.classList.add("key", "black");
         blackKey.dataset.note = note + o;
-
-        // Position black key above the correct white key
         blackKey.style.left = (whiteIndex * 40) + "px";
-
         keyboard.appendChild(blackKey);
       } else {
         // white key
         let whiteKey = document.createElement("div");
         whiteKey.classList.add("key", "white");
         whiteKey.dataset.note = note + o;
-
         keyboard.appendChild(whiteKey);
         whiteIndex++;
       }
@@ -33,115 +45,46 @@ function createKeyboard() {
   }
 }
 
+function noteAt(root, interval) {
+  let idx = NOTES.indexOf(root);
+  return NOTES[(idx + interval) % NOTES.length];
+}
 
-// 🔆 Highlight notes on the keyboard
-function highlightKeys(noteList) {
-  document.querySelectorAll(".key").forEach(key => {
-    key.classList.remove("highlight");
-    if (noteList.includes(key.dataset.note)) {
-      key.classList.add("highlight");
-    }
+function renderTable(mode) {
+  const tbody = document.querySelector("#chordTable tbody");
+  tbody.innerHTML = "";
+  const root = document.getElementById("root").value;
+  const dict = mode === "chords" ? CHORDS : SCALES;
+
+  for (let [name, intervals] of Object.entries(dict)) {
+    let notes = intervals.map(i => noteAt(root, i)).join(" – ");
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<td>${root} ${name}</td><td>${notes}</td>`;
+    tr.dataset.notes = intervals.map(i => noteAt(root, i));
+    tbody.appendChild(tr);
+  }
+}
+
+function highlightNotes(notes) {
+  document.querySelectorAll(".key").forEach(k => k.classList.remove("highlight"));
+  notes.forEach(note => {
+    document.querySelectorAll(`.key[data-note^='${note}']`).forEach(k => {
+      k.classList.add("highlight");
+    });
   });
 }
 
-const CHORD_TYPES = {
-  "Major": [0,4,7],
-  "Minor": [0,3,7],
-  "7 (Dom)": [0,4,7,10],
-  "Maj7": [0,4,7,11],
-  "m7": [0,3,7,10],
-  "Sus2": [0,2,7],
-  "Sus4": [0,5,7],
-  "Dim": [0,3,6],
-};
+document.addEventListener("DOMContentLoaded", () => {
+  createKeyboard();
+  renderTable("chords");
 
-const SCALE_TYPES = {
-  "Major": [0,2,4,5,7,9,11],
-  "Minor": [0,2,3,5,7,8,10],
-  "Harmonic Minor": [0,2,3,5,7,8,11],
-  "Pentatonic": [0,2,4,7,9],
-  "Blues": [0,3,5,6,7,10],
-  "Chromatic": [...Array(12).keys()],
-};
+  document.getElementById("showChords").addEventListener("click", () => renderTable("chords"));
+  document.getElementById("showScales").addEventListener("click", () => renderTable("scales"));
 
-const rootSelect = document.getElementById("root");
-const chordBtn = document.getElementById("chordBtn");
-const scaleBtn = document.getElementById("scaleBtn");
-const chartTable = document.getElementById("chartTable").querySelector("tbody");
-const chartType = document.getElementById("chartType");
-const modeTitle = document.getElementById("modeTitle");
-const footer = document.getElementById("footer");
-
-let mode = "Chord";
-let root = "C";
-
-// Fill root selector
-NOTE_NAMES.forEach(note => {
-  let opt = document.createElement("option");
-  opt.value = note;
-  opt.textContent = note;
-  rootSelect.appendChild(opt);
+  document.querySelector("#chordTable tbody").addEventListener("click", e => {
+    if (e.target.closest("tr")) {
+      let notes = e.target.closest("tr").dataset.notes.split(",");
+      highlightNotes(notes);
+    }
+  });
 });
-rootSelect.value = root;
-
-function noteIndex(rootIndex, semitone) {
-  return (rootIndex + semitone) % 12;
-}
-
-function buildFromIntervals(root, intervals) {
-  const rootIndex = NOTE_NAMES.indexOf(root);
-  return intervals.map(i => NOTE_NAMES[noteIndex(rootIndex, i)]);
-}
-
-function renderChart() {
-  chartTable.innerHTML = "";
-  if (mode === "Chord") {
-    chartType.textContent = "Chord";
-    modeTitle.textContent = "Chord";
-    Object.entries(CHORD_TYPES).forEach(([name, intervals]) => {
-      const notes = buildFromIntervals(root, intervals);
-      let row = document.createElement("tr");
-      row.innerHTML = `<td>${root} ${name}</td><td>${notes.join(" – ")}</td>`;
-      
-      // highlight piano keys when clicking a row
-      row.addEventListener("click", () => highlightKeys(notes));
-      chartTable.appendChild(row);
-    });
-  } else {
-    chartType.textContent = "Scale";
-    modeTitle.textContent = "Scale";
-    Object.entries(SCALE_TYPES).forEach(([name, intervals]) => {
-      const notes = buildFromIntervals(root, intervals);
-      let row = document.createElement("tr");
-      row.innerHTML = `<td>${root} ${name}</td><td>${notes.join(" – ")}</td>`;
-      
-      // highlight piano keys when clicking a row
-      row.addEventListener("click", () => highlightKeys(notes));
-      chartTable.appendChild(row);
-    });
-  }
-  footer.textContent = `This lookup chart shows all ${mode.toLowerCase()}s for root ${root}. Click a row to highlight it on the keyboard.`;
-}
-
-rootSelect.addEventListener("change", (e) => {
-  root = e.target.value;
-  renderChart();
-});
-
-chordBtn.addEventListener("click", () => {
-  mode = "Chord";
-  chordBtn.classList.add("active");
-  scaleBtn.classList.remove("active");
-  renderChart();
-});
-
-scaleBtn.addEventListener("click", () => {
-  mode = "Scale";
-  scaleBtn.classList.add("active");
-  chordBtn.classList.remove("active");
-  renderChart();
-});
-
-// init
-createKeyboard();
-renderChart();
