@@ -1,140 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Fingerin Mo</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f5f7fa; padding: 20px; }
-  .container { background: #fff; padding: 20px; border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-  td { border: 1px solid #ddd; padding: 8px; }
-  tr:hover { background: #f0f0f0; cursor: pointer; }
-  .keyboard { position: relative; width: 840px; height: 200px; }
-  .key.white { position: absolute; width: 60px; height: 200px;
-    border: 1px solid #000; background: #fff; z-index: 1; }
-  .key.black { position: absolute; width: 40px; height: 120px;
-    background: #000; z-index: 2; }
-  .key.highlight.white { background: yellow !important; }
-  .key.highlight.black { background: orange !important; }
-</style>
+  <meta charset="UTF-8">
+  <title>Piano Chord Lookup Chart</title>
+  <style>
+    /* General page styling */
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    /* Main container */
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Title */
+    h2 {
+      margin-top: 0;
+      color: #222;
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    select:hover, button:hover {
+      background: #eee;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e5e5;
+      text-align: left;
+    }
+
+    tr:hover {
+      background: #f3faff;
+      cursor: pointer;
+    }
+
+    th {
+      background: #f0f2f5;
+      font-weight: 600;
+    }
+
+    /* Info text */
+    p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Piano keyboard styling */
+    #keyboard {
+      display: flex;
+      margin-top: 25px;
+      user-select: none;
+      position: relative;
+      height: 160px;
+    }
+
+    .white {
+      width: 40px;
+      height: 160px;
+      background: white;
+      border: 1px solid #aaa;
+      position: relative;
+      z-index: 1;
+      transition: 0.2s;
+    }
+
+    .black {
+      width: 28px;
+      height: 100px;
+      background: black;
+      border: 1px solid #333;
+      position: absolute;
+      z-index: 2;
+      margin-left: -14px;
+      transition: 0.2s;
+    }
+
+    /* Highlighted notes */
+    .highlight-white {
+      background: #ffeb3b !important; /* bright yellow */
+      border-color: #c9a900;
+    }
+
+    .highlight-black {
+      background: #ffa000 !important; /* orange */
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Piano Chord Lookup Chart</h2>
 
-<div class="container">
-  <h2>Fingerin Mo</h2>
-  Root: 
-  <select id="root"></select>
-  <button onclick="showChords()">Chords</button>
-  <button onclick="showScales()">Scales</button>
+    <div class="controls">
+      <select id="root">
+        <option>C</option>
+        <option>C#</option>
+        <option>D</option>
+        <option>D#</option>
+        <option>E</option>
+        <option>F</option>
+        <option>F#</option>
+        <option>G</option>
+        <option>G#</option>
+        <option>A</option>
+        <option>A#</option>
+        <option>B</option>
+      </select>
+      <button onclick="showChords()">Chords</button>
+      <button onclick="showScales()">Scales</button>
+    </div>
 
-  <table id="chart"></table>
-  <small>This chart shows chords/scales for the selected root. 
-  Click a row to highlight it on the keyboard.</small>
-</div>
+    <table id="chart">
+      <thead>
+        <tr><th>Chord / Scale</th><th>Notes</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-<div class="keyboard" id="keyboard"></div>
+    <p>This chart shows chords/scales for the selected root. Click a row to highlight it on the keyboard.</p>
+  </div>
 
-<script>
-const chords = {
-  "Major": [0, 4, 7],
-  "Minor": [0, 3, 7],
-  "7 (Dom)": [0, 4, 7, 10],
-  "Maj7": [0, 4, 7, 11],
-  "m7": [0, 3, 7, 10],
-  "Sus2": [0, 2, 7],
-  "Sus4": [0, 5, 7],
-  "Dim": [0, 3, 6]
-};
+  <!-- Piano keyboard -->
+  <div id="keyboard"></div>
 
-const scales = {
-  "Major Scale": [0, 2, 4, 5, 7, 9, 11],
-  "Minor Scale": [0, 2, 3, 5, 7, 8, 10]
-};
-
-const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-const keyboard = document.getElementById("keyboard");
-
-// --- build 2-octave keyboard (C to B twice) ---
-let keyMap = []; // maps position -> note index
-let whitePos = 0;
-for (let octave=0; octave<2; octave++) {
-  for (let i=0;i<notes.length;i++) {
-    let note = notes[i];
-    if (!note.includes("#")) { // white key
-      let div=document.createElement("div");
-      div.classList.add("key","white");
-      div.style.left = `${whitePos*60}px`;
-      div.dataset.index = i + octave*12; // exact index
-      keyboard.appendChild(div);
-      whitePos++;
-    }
-  }
-}
-whitePos=0;
-for (let octave=0; octave<2; octave++) {
-  for (let i=0;i<notes.length;i++) {
-    let note=notes[i];
-    if (note.includes("#")) { // black key
-      let offset=[1,2,4,5,6,8,9,11].includes(i)?true:false;
-      if(offset){
-        let left = (whitePos*60)-20;
-        if (note==="C#"||note==="F#") left+=40;
-        if (note==="D#"||note==="G#"||note==="A#") left+=100;
+  <script>
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const whiteOrder = ["C","D","E","F","G","A","B"];
+    const blackMap = {"C": "C#","D": "D#","F":"F#","G":"G#","A":"A#"};
+    
+    // Generate 1 octave
+    const keyboard = document.getElementById("keyboard");
+    whiteOrder.forEach((w,i)=>{
+      let white = document.createElement("div");
+      white.className="white";
+      white.dataset.note=w;
+      keyboard.appendChild(white);
+      if(blackMap[w]){
+        let black=document.createElement("div");
+        black.className="black";
+        black.dataset.note=blackMap[w];
+        black.style.left = (i*40+30)+"px";
+        keyboard.appendChild(black);
       }
+    });
+
+    const chords = {
+      "Major": [0,4,7],
+      "Minor": [0,3,7],
+      "7 (Dom)": [0,4,7,10],
+      "Maj7": [0,4,7,11],
+      "m7": [0,3,7,10],
+      "Sus2": [0,2,7],
+      "Sus4": [0,5,7],
+      "Dim": [0,3,6]
+    };
+
+    const scales = {
+      "Major Scale": [0,2,4,5,7,9,11],
+      "Natural Minor": [0,2,3,5,7,8,10]
+    };
+
+    function showChords(){
+      render(chords,"Chord");
     }
-  }
-}
-// --- simpler fixed black positioning ---
-const blackOffsets = { "C#":40,"D#":100,"F#":220,"G#":280,"A#":340 };
-for (let octave=0; octave<2; octave++) {
-  let base = octave*420; // 7 white keys * 60
-  for (let [n,off] of Object.entries(blackOffsets)){
-    let div=document.createElement("div");
-    div.classList.add("key","black");
-    div.style.left=`${base+off}px`;
-    div.dataset.index = notes.indexOf(n)+octave*12;
-    keyboard.appendChild(div);
-  }
-}
-
-// --- populate root selector ---
-notes.forEach(n=>{
-  let opt=document.createElement("option");
-  opt.value=n; opt.text=n;
-  root.appendChild(opt);
-});
-
-function showChords(){ renderTable(chords); }
-function showScales(){ renderTable(scales); }
-
-function renderTable(data){
-  let root=document.getElementById("root").value;
-  let table=document.getElementById("chart");
-  table.innerHTML="";
-  let rootIndex=notes.indexOf(root);
-
-  for(let [name,intervals] of Object.entries(data)){
-    let row=table.insertRow();
-    let c1=row.insertCell(), c2=row.insertCell();
-    c1.innerText=`${root} ${name}`;
-    let chordNotes=intervals.map(i=>notes[(rootIndex+i)%12]);
-    c2.innerText=chordNotes.join(" – ");
-
-    row.onclick=()=>highlightNotes(rootIndex,intervals);
-  }
-}
-
-function highlightNotes(rootIndex,intervals){
-  document.querySelectorAll(".key").forEach(k=>k.classList.remove("highlight"));
-  let targetIdxs=intervals.map(i=>rootIndex+i);
-  document.querySelectorAll(".key").forEach(k=>{
-    if(targetIdxs.includes(parseInt(k.dataset.index))){
-      k.classList.add("highlight");
+    function showScales(){
+      render(scales,"Scale");
     }
-  });
-}
-</script>
+
+    function render(set,label){
+      const root=document.getElementById("root").value;
+      const tbody=document.querySelector("#chart tbody");
+      tbody.innerHTML="";
+      Object.entries(set).forEach(([name,intervals])=>{
+        let row=document.createElement("tr");
+        const chordNotes=intervals.map(i=>notes[(notes.indexOf(root)+i)%12]);
+        row.innerHTML=`<td>${root} ${name}</td><td>${chordNotes.join(" – ")}</td>`;
+        row.onclick=()=>highlight(chordNotes);
+        tbody.appendChild(row);
+      });
+    }
+
+    function highlight(chordNotes){
+      document.querySelectorAll(".white, .black").forEach(k=>k.classList.remove("highlight-white","highlight-black"));
+      chordNotes.forEach(n=>{
+        let key=document.querySelector(`[data-note='${n}']`);
+        if(key){
+          if(key.classList.contains("white")) key.classList.add("highlight-white");
+          if(key.classList.contains("black")) key.classList.add("highlight-black");
+        }
+      });
+    }
+  </script>
 </body>
 </html>
-
