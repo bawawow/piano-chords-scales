@@ -49,3 +49,33 @@ footer {
   font-size: 0.8rem;
   color: #64748b;
 }
+.keyboard {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  user-select: none;
+}
+
+.key {
+  width: 40px;
+  height: 180px;
+  border: 1px solid #333;
+  background: white;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.key.black {
+  width: 28px;
+  height: 110px;
+  background: black;
+  position: absolute;
+  margin-left: -14px;
+  margin-right: -14px;
+  z-index: 2;
+}
+
+.key.highlight {
+  background: #facc15 !important; /* yellow highlight */
+}
+
