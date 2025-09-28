@@ -30,29 +30,31 @@ tr:hover {
 
 .keyboard {
   position: relative;
-  width: 840px; /* 2 octaves (14 white keys) */
+  width: 840px; /* 14 white keys = 2 octaves */
   height: 200px;
 }
 
 .key.white {
+  position: absolute;
   width: 60px;
   height: 200px;
   border: 1px solid #000;
   background: #fff;
-  display: inline-block;
-  position: relative;
   z-index: 1;
 }
 
 .key.black {
+  position: absolute;
   width: 40px;
   height: 120px;
   background: #000;
-  position: absolute;
-  z-index: 2; /* keep black keys always on top */
-  margin-left: -20px;
+  z-index: 2; /* stay above white */
 }
 
-.key.highlight {
+.key.highlight.white {
   background: yellow !important;
+}
+
+.key.highlight.black {
+  background: orange !important; /* separate color for black notes */
 }
