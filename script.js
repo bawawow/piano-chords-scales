@@ -1,27 +1,34 @@
 // 🎵 List of notes for the piano keys
-const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-const OCTAVES = 3; // change this number to make the keyboard bigger
+const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const OCTAVES = 2;
 
-
-// 🎹 Create a piano keyboard
 function createKeyboard() {
-const keyboard = document.getElementById("keyboard");
+  const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
 
-  const octaves = 3; // number of octaves
-  for (let o = 0; o < octaves; o++) {
+  let whiteIndex = 0;
+
+  for (let o = 0; o < OCTAVES; o++) {
     NOTES.forEach(note => {
-      let key = document.createElement("div");
-      key.classList.add("key");
-      key.dataset.note = note + o; // keep octave info for uniqueness
-
       if (note.includes("#")) {
-        key.classList.add("black");
-      } else {
-        key.classList.add("white");
-      }
+        // black key
+        let blackKey = document.createElement("div");
+        blackKey.classList.add("key", "black");
+        blackKey.dataset.note = note + o;
 
-      keyboard.appendChild(key);
+        // Position black key above the correct white key
+        blackKey.style.left = (whiteIndex * 40) + "px";
+
+        keyboard.appendChild(blackKey);
+      } else {
+        // white key
+        let whiteKey = document.createElement("div");
+        whiteKey.classList.add("key", "white");
+        whiteKey.dataset.note = note + o;
+
+        keyboard.appendChild(whiteKey);
+        whiteIndex++;
+      }
     });
   }
 }
