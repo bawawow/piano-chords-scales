@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Piano Chords & Scales Lookup Chart</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Piano Chord Lookup Chart</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Piano <span id="modeTitle">Chord</span> Lookup Chart</h1>
+    <h2>Piano Chord Lookup Chart</h2>
+    <label for="root">Root:</label>
+    <select id="root">
+      <option>C</option>
+      <option>C#</option>
+      <option>D</option>
+      <option>D#</option>
+      <option>E</option>
+      <option>F</option>
+      <option>F#</option>
+      <option>G</option>
+      <option>G#</option>
+      <option>A</option>
+      <option>A#</option>
+      <option>B</option>
+    </select>
+    <button id="showChords">Chords</button>
+    <button id="showScales">Scales</button>
 
-    <div class="controls">
-      <label for="root">Root: </label>
-      <select id="root"></select>
-      <button id="chordBtn" class="active">Chords</button>
-      <button id="scaleBtn">Scales</button>
-    </div>
-
-    <table id="chartTable">
+    <table id="chordTable">
       <thead>
         <tr>
-          <th id="chartType">Chord</th>
+          <th>Chord / Scale</th>
           <th>Notes</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-
-    <footer id="footer"></footer>
+    <p>This lookup chart shows chords/scales for the selected root. Click a row to highlight it on the keyboard.</p>
   </div>
 
-<div id="keyboard" class="keyboard"></div>
-<script src="script.js"></script>
+  <div id="keyboard"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
