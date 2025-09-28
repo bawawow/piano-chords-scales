@@ -1,7 +1,7 @@
 const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const OCTAVES = 2;
 
-const CHORDS = {
+const chords = {
   "Major": [0, 4, 7],
   "Minor": [0, 3, 7],
   "7 (Dom)": [0, 4, 7, 10],
@@ -12,79 +12,62 @@ const CHORDS = {
   "Dim": [0, 3, 6]
 };
 
-const SCALES = {
+const scales = {
   "Major Scale": [0, 2, 4, 5, 7, 9, 11],
-  "Minor Scale": [0, 2, 3, 5, 7, 8, 10],
-  "Pentatonic Major": [0, 2, 4, 7, 9],
-  "Pentatonic Minor": [0, 3, 5, 7, 10]
+  "Minor Scale": [0, 2, 3, 5, 7, 8, 10]
 };
 
-function createKeyboard() {
-  const keyboard = document.getElementById("keyboard");
-  keyboard.innerHTML = "";
+const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
-  let whiteIndex = 0;
-  for (let o = 0; o < OCTAVES; o++) {
-    NOTES.forEach(note => {
-      if (note.includes("#")) {
-        // black key
-        let blackKey = document.createElement("div");
-        blackKey.classList.add("key", "black");
-        blackKey.dataset.note = note + o;
-        blackKey.style.left = (whiteIndex * 40) + "px";
-        keyboard.appendChild(blackKey);
-      } else {
-        // white key
-        let whiteKey = document.createElement("div");
-        whiteKey.classList.add("key", "white");
-        whiteKey.dataset.note = note + o;
-        keyboard.appendChild(whiteKey);
-        whiteIndex++;
-      }
-    });
+const keyboard = document.getElementById("keyboard");
+
+// --- Build 2 octaves (24 semitones = 14 white keys) ---
+for (let i = 0; i < 24; i++) {
+  let note = notes[i % 12];
+  let div = document.createElement("div");
+  div.classList.add("key");
+
+  if (note.includes("#")) {
+    div.classList.add("black");
+    div.style.left = `${i * 60}px`;
+  } else {
+    div.classList.add("white");
+  }
+
+  div.dataset.note = note;
+  keyboard.appendChild(div);
+}
+
+function showChords() {
+  renderTable(chords);
+}
+
+function showScales() {
+  renderTable(scales);
+}
+
+function renderTable(data) {
+  let root = document.getElementById("root").value;
+  let table = document.getElementById("chart");
+  table.innerHTML = "";
+
+  for (let [name, intervals] of Object.entries(data)) {
+    let row = table.insertRow();
+    let cell1 = row.insertCell();
+    let cell2 = row.insertCell();
+    cell1.innerText = `${root} ${name}`;
+    let chordNotes = intervals.map(i => notes[(notes.indexOf(root) + i) % 12]);
+    cell2.innerText = chordNotes.join(" – ");
+
+    row.onclick = () => highlightNotes(chordNotes);
   }
 }
 
-function noteAt(root, interval) {
-  let idx = NOTES.indexOf(root);
-  return NOTES[(idx + interval) % NOTES.length];
-}
-
-function renderTable(mode) {
-  const tbody = document.querySelector("#chordTable tbody");
-  tbody.innerHTML = "";
-  const root = document.getElementById("root").value;
-  const dict = mode === "chords" ? CHORDS : SCALES;
-
-  for (let [name, intervals] of Object.entries(dict)) {
-    let notes = intervals.map(i => noteAt(root, i)).join(" – ");
-    let tr = document.createElement("tr");
-    tr.innerHTML = `<td>${root} ${name}</td><td>${notes}</td>`;
-    tr.dataset.notes = intervals.map(i => noteAt(root, i));
-    tbody.appendChild(tr);
-  }
-}
-
-function highlightNotes(notes) {
+function highlightNotes(chordNotes) {
   document.querySelectorAll(".key").forEach(k => k.classList.remove("highlight"));
-  notes.forEach(note => {
-    document.querySelectorAll(`.key[data-note^='${note}']`).forEach(k => {
+  document.querySelectorAll(".key").forEach(k => {
+    if (chordNotes.includes(k.dataset.note)) {
       k.classList.add("highlight");
-    });
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  createKeyboard();
-  renderTable("chords");
-
-  document.getElementById("showChords").addEventListener("click", () => renderTable("chords"));
-  document.getElementById("showScales").addEventListener("click", () => renderTable("scales"));
-
-  document.querySelector("#chordTable tbody").addEventListener("click", e => {
-    if (e.target.closest("tr")) {
-      let notes = e.target.closest("tr").dataset.notes.split(",");
-      highlightNotes(notes);
     }
   });
-});
+}
