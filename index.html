@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Piano Chords & Scales</title>
-  <!-- connect CSS -->
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piano Chords & Scales Lookup Chart</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Piano Chords & Scales</h1>
+    <h1>Piano <span id="modeTitle">Chord</span> Lookup Chart</h1>
 
-    <h2>Chords</h2>
-    <button onclick="showChord('C Major')">C Major</button>
-    <button onclick="showChord('G Major')">G Major</button>
-    <button onclick="showChord('A Minor')">A Minor</button>
+    <div class="controls">
+      <label for="root">Root: </label>
+      <select id="root"></select>
+      <button id="chordBtn" class="active">Chords</button>
+      <button id="scaleBtn">Scales</button>
+    </div>
 
-    <h2>Scales</h2>
-    <button onclick="showScale('C Major Scale')">C Major Scale</button>
-    <button onclick="showScale('G Major Scale')">G Major Scale</button>
-    <button onclick="showScale('A Minor Scale')">A Minor Scale</button>
+    <table id="chartTable">
+      <thead>
+        <tr>
+          <th id="chartType">Chord</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-    <div id="output">Select a chord or scale</div>
+    <footer id="footer"></footer>
   </div>
 
-  <!-- connect JS -->
   <script src="script.js"></script>
 </body>
 </html>
