@@ -1,16 +1,16 @@
-// List of notes for the piano keys
-const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+// 🎵 List of notes for the piano keys
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
 // 🎹 Create a piano keyboard
 function createKeyboard() {
   const keyboard = document.getElementById("keyboard");
   keyboard.innerHTML = "";
 
-  NOTES.forEach((note, index) => {
+  NOTE_NAMES.forEach((note, index) => {
     let key = document.createElement("div");
     key.classList.add("key");
 
-    // Make black keys (#)
+    // Black keys
     if (note.includes("#")) {
       key.classList.add("black");
       key.style.left = (index * 40 - 14) + "px";
@@ -30,29 +30,6 @@ function highlightKeys(noteList) {
     }
   });
 }
-
-// 🎵 Show chord + highlight notes
-function showChord(chord) {
-  document.getElementById("output").innerText = "Chord: " + chord;
-
-  if (chord === "C Major") highlightKeys(["C","E","G"]);
-  if (chord === "G Major") highlightKeys(["G","B","D"]);
-  if (chord === "A Minor") highlightKeys(["A","C","E"]);
-}
-
-// 🎼 Show scale + highlight notes
-function showScale(scale) {
-  document.getElementById("output").innerText = "Scale: " + scale;
-
-  if (scale === "C Major Scale") highlightKeys(["C","D","E","F","G","A","B"]);
-  if (scale === "G Major Scale") highlightKeys(["G","A","B","C","D","E","F#"]);
-  if (scale === "A Minor Scale") highlightKeys(["A","B","C","D","E","F","G"]);
-}
-
-// 🖼️ Draw keyboard on page load
-createKeyboard();
-
-const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
 const CHORD_TYPES = {
   "Major": [0,4,7],
@@ -110,19 +87,27 @@ function renderChart() {
     modeTitle.textContent = "Chord";
     Object.entries(CHORD_TYPES).forEach(([name, intervals]) => {
       const notes = buildFromIntervals(root, intervals);
-      let row = `<tr><td>${root} ${name}</td><td>${notes.join(" – ")}</td></tr>`;
-      chartTable.insertAdjacentHTML("beforeend", row);
+      let row = document.createElement("tr");
+      row.innerHTML = `<td>${root} ${name}</td><td>${notes.join(" – ")}</td>`;
+      
+      // highlight piano keys when clicking a row
+      row.addEventListener("click", () => highlightKeys(notes));
+      chartTable.appendChild(row);
     });
   } else {
     chartType.textContent = "Scale";
     modeTitle.textContent = "Scale";
     Object.entries(SCALE_TYPES).forEach(([name, intervals]) => {
       const notes = buildFromIntervals(root, intervals);
-      let row = `<tr><td>${root} ${name}</td><td>${notes.join(" – ")}</td></tr>`;
-      chartTable.insertAdjacentHTML("beforeend", row);
+      let row = document.createElement("tr");
+      row.innerHTML = `<td>${root} ${name}</td><td>${notes.join(" – ")}</td>`;
+      
+      // highlight piano keys when clicking a row
+      row.addEventListener("click", () => highlightKeys(notes));
+      chartTable.appendChild(row);
     });
   }
-  footer.textContent = `This lookup chart shows all ${mode.toLowerCase()}s for root ${root}. Switch root or mode to explore more.`;
+  footer.textContent = `This lookup chart shows all ${mode.toLowerCase()}s for root ${root}. Click a row to highlight it on the keyboard.`;
 }
 
 rootSelect.addEventListener("change", (e) => {
@@ -144,4 +129,6 @@ scaleBtn.addEventListener("click", () => {
   renderChart();
 });
 
+// init
+createKeyboard();
 renderChart();
