@@ -51,10 +51,10 @@ footer {
 }
 .keyboard {
   position: relative;
-  width: calc(12 * 40px * 3); /* 12 notes × 40px × 3 octaves */
-  height: 160px;
+  display: flex;
   margin: 20px auto;
-  background: #eee;
+  width: fit-content;
+  background: #ddd; /* optional background so white keys show properly */
 }
 
 .key {
