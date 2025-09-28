@@ -1,68 +1,58 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f9;
-  margin: 0;
+  background: #f5f7fa;
   padding: 20px;
 }
 
 .container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
   background: #fff;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
 }
 
-#chordTable {
-  width: 100%;
+table {
   border-collapse: collapse;
-  margin-top: 15px;
+  width: 100%;
+  margin-top: 10px;
 }
 
-#chordTable th, #chordTable td {
+td {
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: left;
 }
 
-#chordTable tr:hover {
-  background: #f1f1f1;
+tr:hover {
+  background: #f0f0f0;
   cursor: pointer;
 }
 
-/* 🎹 Keyboard styles */
-#keyboard {
+.keyboard {
   position: relative;
-  display: flex;
-  margin: 30px auto;
-  width: fit-content;
-  background: #ccc;
-  height: 180px;
+  width: 840px; /* 2 octaves (14 white keys) */
+  height: 200px;
 }
 
-/* White keys */
 .key.white {
-  width: 40px;
-  height: 180px;
-  background: white;
-  border: 1px solid black;
-  z-index: 1;
+  width: 60px;
+  height: 200px;
+  border: 1px solid #000;
+  background: #fff;
+  display: inline-block;
   position: relative;
+  z-index: 1;
 }
 
-/* Black keys */
 .key.black {
-  width: 25px;
-  height: 110px;
-  background: black;
-  border: 1px solid #222;
+  width: 40px;
+  height: 120px;
+  background: #000;
   position: absolute;
-  z-index: 2;
-  margin-left: -12px; /* centers it between whites */
+  z-index: 2; /* keep black keys always on top */
+  margin-left: -20px;
 }
 
-/* Highlighted keys */
 .key.highlight {
   background: yellow !important;
 }
