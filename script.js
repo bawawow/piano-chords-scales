@@ -1,3 +1,9 @@
+const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const OCTAVES = 2;
+const whiteOrder = ["C","D","E","F","G","A","B"];
+const blackPos = {"C#":40,"D#":100,"F#":220,"G#":280,"A#":340}; 
+
+
 const chords = {
   "Major": [0, 4, 7],
   "Minor": [0, 3, 7],
@@ -14,9 +20,6 @@ const scales = {
   "Minor Scale": [0, 2, 3, 5, 7, 8, 10]
 };
 
-const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-const whiteOrder = ["C","D","E","F","G","A","B"];
-const blackPos = {"C#":40,"D#":100,"F#":220,"G#":280,"A#":340}; 
 
 const keyboard = document.getElementById("keyboard");
 
