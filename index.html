@@ -8,37 +8,19 @@
 <body>
   <div class="container">
     <h2>Piano Chord Lookup Chart</h2>
-    <label for="root">Root:</label>
     <select id="root">
-      <option>C</option>
-      <option>C#</option>
-      <option>D</option>
-      <option>D#</option>
-      <option>E</option>
-      <option>F</option>
-      <option>F#</option>
-      <option>G</option>
-      <option>G#</option>
-      <option>A</option>
-      <option>A#</option>
-      <option>B</option>
+      <option>C</option><option>C#</option><option>D</option><option>D#</option>
+      <option>E</option><option>F</option><option>F#</option><option>G</option>
+      <option>G#</option><option>A</option><option>A#</option><option>B</option>
     </select>
-    <button id="showChords">Chords</button>
-    <button id="showScales">Scales</button>
+    <button onclick="showChords()">Chords</button>
+    <button onclick="showScales()">Scales</button>
 
-    <table id="chordTable">
-      <thead>
-        <tr>
-          <th>Chord / Scale</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <table id="chart"></table>
     <p>This lookup chart shows chords/scales for the selected root. Click a row to highlight it on the keyboard.</p>
   </div>
 
-  <div id="keyboard"></div>
+  <div class="keyboard" id="keyboard"></div>
 
   <script src="script.js"></script>
 </body>
