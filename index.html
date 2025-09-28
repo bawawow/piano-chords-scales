@@ -11,8 +11,10 @@
   /* Body & Background */
   body {
     font-family: "Segoe UI", Tahoma, sans-serif;
-    background-image: url(https://images.unsplash.com/photo-1648461513491-c8dc79739211?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBzaGVldHxlbnwwfHwwfHx8MA%3D%3D);background-size: cover;        /* cover the entire viewport */
+    background-image: url(https://images.unsplash.com/photo-1648461513491-c8dc79739211?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBzaGVldHxlbnwwfHwwfHx8MA%3D%3D);
     background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 20px;
     color: #333;
@@ -26,6 +28,7 @@
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow-x: auto; /* scroll if table too wide on mobile */
   }
 
   /* Main Title */
@@ -55,6 +58,13 @@
     text-decoration: underline;
   }
 
+  /* Instruction */
+  #instruction {
+    text-align:center;
+    font-weight:bold;
+    color:#444;
+  }
+
   /* Controls */
   .controls {
     display: flex;
@@ -76,44 +86,44 @@
 
   select:hover, button:hover { background: #eee; }
 
-    /* Table styling */
+  /* Table styling */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 15px;
     font-family: 'Arial', sans-serif;
+    table-layout: fixed; /* Fix alignment */
   }
 
-  th {
-    background-color: #4CAF50; /* green header */
-    color: white;
-    font-weight: bold;
-    padding: 12px;
-    text-align: left;
-  }
-
-  td {
+  th, td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
-tr:nth-child(even) { background-color: #fdf6e3; } /* light cream for even rows */
-tr:nth-child(odd) { background-color: #f6ecd2; }  /* slightly darker parchment for odd rows */
-tr:hover { background-color: #e8d7b3; }           /* warm beige highlight on hover */
-th { background-color: #d4b483; color: #000; }    /* header: warm brown */
+  th:first-child, td:first-child { width: 40%; }  /* chord/scale column */
+  th:last-child, td:last-child { width: 60%; }   /* notes column */
 
+  tr:nth-child(even) { background-color: #fdf6e3; }
+  tr:nth-child(odd) { background-color: #f6ecd2; }
+  tr:hover { background-color: #e8d7b3; }
+  th { background-color: #d4b483; color: #000; font-weight: bold; }
 
   /* Keyboard */
   #keyboardWrapper {
     display: flex;
     justify-content: center;
     margin-top: 25px;
+    overflow-x: auto; /* horizontal scroll for mobile */
   }
 
   #keyboard {
     display: flex;
     position: relative;
-    width: 560px; /* bigger keyboard */
+    width: 100%;
+    max-width: 560px;
     height: 220px;
   }
 
@@ -143,8 +153,12 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
   .highlight-white { background: #ffeb3b !important; border-color: #c9a900; }
   .highlight-black { background: #ffa000 !important; }
 
+  /* Responsive adjustments */
   @media(max-width:600px){
-    #keyboard { width: 280px; height: 160px; }
+    h1 { font-size: 2rem; }
+    h2.subtitle { font-size: 1.4rem; }
+    select, button { font-size: 14px; padding: 8px 12px; }
+    #keyboard { height: 160px; }
     .white { width: 40px; height: 160px; }
     .black { width: 28px; height: 100px; }
   }
@@ -156,7 +170,7 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
   <h1>PIANO CHORD</h1>
   <h2 class="subtitle"><a href="#">"Master the Art of Proper Fingering"</a></h2>
 
-  <p id="instruction" style="text-align:center; font-weight:bold; color:#444;">
+  <p id="instruction">
     Choose a root note, then click <strong>Chords</strong> or <strong>Scales</strong> to see the corresponding piano notes and scales highlighted on the keyboard.
   </p>
 
@@ -170,12 +184,14 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
     <button onclick="showScales()">Scales</button>
   </div>
 
-  <table id="chart" style="display:none;">
-    <thead>
-      <tr><th>Chord / Scale</th><th>Notes</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div style="overflow-x:auto;">
+    <table id="chart" style="display:none;">
+      <thead>
+        <tr><th>Chord / Scale</th><th>Notes</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </div>
 
 <div id="keyboardWrapper">
@@ -199,7 +215,7 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
       const black = document.createElement("div");
       black.className = "black";
       black.dataset.note = blackMap[w];
-      black.style.left = (i*80 + 60)+"px"; // adjust to bigger white key
+      black.style.left = (i*80 + 60)+"px"; 
       keyboard.appendChild(black);
     }
   });
@@ -219,8 +235,8 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
   function showScales(){ render(scales); }
 
   function render(set){
-    document.getElementById("instruction").style.display="none"; // hide instruction
-    document.getElementById("chart").style.display="table"; // show chart
+    document.getElementById("instruction").style.display="none";
+    document.getElementById("chart").style.display="table";
 
     const root = document.getElementById("root").value;
     const tbody = document.querySelector("#chart tbody");
@@ -244,9 +260,6 @@ th { background-color: #d4b483; color: #000; }    /* header: warm brown */
       }
     });
   }
-
 </script>
 </body>
 </html>
-
-
