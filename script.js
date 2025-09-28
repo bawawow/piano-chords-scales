@@ -1,5 +1,36 @@
 const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 
+function createKeyboard() {
+  const keyboard = document.getElementById("keyboard");
+  keyboard.innerHTML = "";
+
+  NOTES.forEach((note, index) => {
+    let key = document.createElement("div");
+    key.classList.add("key");
+
+    // Black keys
+    if (note.includes("#")) {
+      key.classList.add("black");
+      key.style.left = (index * 40 - 14) + "px";
+    }
+
+    key.dataset.note = note;
+    keyboard.appendChild(key);
+  });
+}
+
+function highlightKeys(noteList) {
+  document.querySelectorAll(".key").forEach(key => {
+    key.classList.remove("highlight");
+    if (noteList.includes(key.dataset.note)) {
+      key.classList.add("highlight");
+    }
+  });
+}
+
+// Draw keyboard on load
+createKeyboard();
+
 const CHORD_TYPES = {
   "Major": [0,4,7],
   "Minor": [0,3,7],
